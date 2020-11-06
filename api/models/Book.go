@@ -23,15 +23,15 @@ type Book struct {
 }
 
 type BookRequest struct {
-	Title     string    `gorm:"size:255;not null;unique" json:"title"`
-	Author1   string    `gorm:"size:255;not null" json:"author1"`
-	Author2   string    `gorm:"size:255;null;" json:"author2"`
-	Author3   string    `gorm:"size:255;null;" json:"author3"`
-	Pages     uint      `gorm:"size:255;not null;" json:"pages"`
-	ISBN      string    `gorm:"size:30;not null;unique" json:"isbn"`
-	Year      int       `gorm:"not null;" json:"year"`
-	Genre     string    `gorm:"size:100;not null" json:"genre"`
-	Publisher string    `gorm:"size:255;not null" json:"publisher"`
+	Title     string `gorm:"size:255;not null;unique" json:"title"`
+	Author1   string `gorm:"size:255;not null" json:"author1"`
+	Author2   string `gorm:"size:255;null;" json:"author2"`
+	Author3   string `gorm:"size:255;null;" json:"author3"`
+	Pages     uint   `gorm:"size:255;not null;" json:"pages"`
+	ISBN      string `gorm:"size:30;not null;unique" json:"isbn"`
+	Year      int    `gorm:"not null;" json:"year"`
+	Genre     string `gorm:"size:100;not null" json:"genre"`
+	Publisher string `gorm:"size:255;not null" json:"publisher"`
 }
 
 func Validate(book *BookRequest) map[string]string {
@@ -96,33 +96,6 @@ func FindBookByID(db *gorm.DB, uid uint32) (*Book, error) {
 		return &Book{}, errors.New("book not found")
 	}
 	return &book, err
-}
-
-func FindBooksByKeyword(db *gorm.DB, keyword string) (*[]Book, error) {
-	var err error
-	var books []Book
-	err = db.Debug().Where("title = ?", keyword).Or("author1 = ?", keyword).Or("genre = ?", keyword).Or("publisher = ?", keyword).Find(&books).Error
-	if err != nil {
-		return nil, err
-	}
-	if gorm.IsRecordNotFoundError(err) {
-		return nil, errors.New("book not found")
-	}
-	return &books, err
-}
-
-// TODO: keyword, editorial, year, author, publisher, publisher and year -- genres author
-func FindBooksByPublisherAndYear(db *gorm.DB, publisher string, yearFrom, yearTo int) (*[]Book, error) {
-	var err error
-	var books []Book
-	err = db.Debug().Find(&books, "publisher LIKE ? AND age BETWEEN ? AND ?", publisher, yearFrom, yearTo).Error
-	if err != nil {
-		return nil, err
-	}
-	if gorm.IsRecordNotFoundError(err) {
-		return nil, errors.New("book not found")
-	}
-	return &books, err
 }
 
 func UpdateBook(db *gorm.DB, book *Book, uid uint32) (*Book, error) {

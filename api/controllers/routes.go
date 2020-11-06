@@ -16,5 +16,12 @@ func (s *Server) initializeRoutes() {
 
 		// Authors routes
 		v1.GET("/authors", s.GetAuthors)
+
+		// Search routes
+		v1.GET("/search/publisher/:publisher", s.GetBooksByPublisher)
+		v1.GET("/search/years/:years", s.GetBooksByYear)
+		v1.GET("/search/publisher/:publisher/years/:years", s.GetBooksByPublisherAndYear)
+		v1.GET("/search/keyword/:keyword", s.GetBooksByKeyword)
+		v1.GET("/search/author/:author", s.GetBooksByAuthor)
 	}
 }
