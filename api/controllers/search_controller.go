@@ -144,6 +144,38 @@ func (server *Server) GetBooksByKeyword(c *gin.Context) {
 	})
 }
 
+func (server *Server) GetBooksByTitle(c *gin.Context) {
+
+	// clear previous error if any
+	errList = map[string]string{}
+
+	title := c.Param("title")
+	if title == "" {
+		errList["invalid_title"] = "invalid title"
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  errList,
+		})
+		return
+	}
+
+	books, err := models.FindBooksByTitle(server.DB, title)
+
+	if err != nil {
+		errList["No_books"] = "No books Found"
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  errList,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":   http.StatusOK,
+		"response": books,
+	})
+}
+
 func (server *Server) GetBooksByAuthor(c *gin.Context) {
 
 	// clear previous error if any

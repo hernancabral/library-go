@@ -31,6 +31,19 @@ func FindBooksByAuthor(db *gorm.DB, author string) (*[]Book, error) {
 	return &books, err
 }
 
+func FindBooksByTitle(db *gorm.DB, title string) (*[]Book, error) {
+	var err error
+	var books []Book
+	err = db.Debug().Where("UPPER(title) LIKE UPPER(?)", "%" +title+ "%").Find(&books).Error
+	if err != nil {
+		return nil, err
+	}
+	if gorm.IsRecordNotFoundError(err){
+		return nil, errors.New("book not found")
+	}
+	return &books, err
+}
+
 func FindBooksByKeyword(db *gorm.DB, keyword string) (*[]Book, error) {
 	var err error
 	var books []Book
