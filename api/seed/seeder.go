@@ -88,7 +88,7 @@ var books = []models.Book{
 	},
 }
 
-func Load(db *gorm.DB) {
+func Load(db *gorm.DB) ([]models.Book, error){
 
 	err := db.Debug().DropTableIfExists(&models.Book{}).Error
 	if err != nil {
@@ -105,4 +105,6 @@ func Load(db *gorm.DB) {
 			log.Fatalf("cannot seed books table: %v", err)
 		}
 	}
+
+	return books, err
 }
